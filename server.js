@@ -1,7 +1,12 @@
 const express = require('express');
 const path = require('path');
-//const db = require('./db');
+const db = require('./db');
 const app = express();
+
+const dataLayerUsers = db('./users.json');
+const dataLayerDepartments = db('./departments.json');
+
+app.use(express.json());
 
 app.get('/', (req, res, next)=> {
   res.sendFile(path.join(__dirname, 'index.html'));
@@ -9,7 +14,7 @@ app.get('/', (req, res, next)=> {
 
 app.get('/api/users', async(req, res, next)=> {
   try {
-    res.send(await db.findAllUsers());
+    res.send(await dataLayerUsers.findAllUsers());
   }
   catch(ex){
     next(ex);
@@ -18,7 +23,7 @@ app.get('/api/users', async(req, res, next)=> {
 
 app.get('/api/departments', async(req, res, next)=> {
   try {
-    res.send(await db.findAllDepartments());
+    res.send(await dataLayerDepartments.findAllDepartments());
   }
   catch(ex){
     next(ex);
