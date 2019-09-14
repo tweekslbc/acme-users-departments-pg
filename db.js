@@ -1,35 +1,24 @@
-const fs = require('fs');
-const FILE1 = './users.JSON'
-const FILE2 = './departments.JSON'
+const pg = require('pg');
+const {Client} = pg;
 
+const client = new Client('postgres://localhost/the_acme_db');
 
-const readJSON = ()=> {
-  return new Promise((resolve, reject )=> {
-    fs.readFile(FILE1, (err, data)=> {
-      if(data){
-        try {
-          resolve(JSON.parse(data.toString()));
-        }
-        catch(ex){
-          reject(ex);
-        }
-      }
-      else {
-        reject(err);
-      }
-    });
-​
-  });
+client.connect();
+
+const sync = async()=> {
+  await client.query(SQL);
 };
 
-const findAllUsers = ()=> {
-  return readJSON();
+const findAllUsers = async()=> {
+  const response = await client.query('Select * FROM users;');
+  return response.rows;
 }
 const findAllDepartments = ()=> {
-  return readJSON();
-}
+  const response = await client.query('Select * FROM departments;');
+  return response.rows;
 
 module.exports = {
+  sync,
   findAllUsers,
   findAllDepartments
 }
